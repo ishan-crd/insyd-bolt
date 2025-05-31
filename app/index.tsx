@@ -1,14 +1,30 @@
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from "react-native";
 import BottomNav from "./components/BottomNav";
 import Header from "./components/Header";
+import ImageCarousel from "./components/ImageCarousel";
 import Rec from "./components/Rec";
 import SearchBar from "./components/SearchBar";
+
 SplashScreen.preventAutoHideAsync();
 
-export default function index() {
+export default function Index() {
+  const carouselImages = [
+    "https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg",
+    "https://images.pexels.com/photos/2114365/pexels-photo-2114365.jpeg",
+    "https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg",
+    "https://images.pexels.com/photos/1839919/pexels-photo-1839919.jpeg",
+    "https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg",
+  ];
+
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const recommendedClubs = [
@@ -51,7 +67,6 @@ export default function index() {
       } catch (error) {
         console.warn("Error loading fonts:", error);
       } finally {
-        // Hide splash screen once fonts are loaded (or failed to load)
         await SplashScreen.hideAsync();
       }
     }
@@ -60,30 +75,35 @@ export default function index() {
   }, []);
 
   if (!fontsLoaded) {
-    return null; // or a loading component
+    return null;
   }
 
   return (
-    <View style={styles.view}>
-      <Header />
-      <SearchBar />
-      <Image
-        source={{
-          uri: "https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg",
-        }}
-        style={styles.mainBanner}
-      />
-      <Rec recommendedClubs={recommendedClubs} />
-      <Rec recommendedClubs={recommendedClubs} />
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Header />
+        <SearchBar />
+        <ImageCarousel images={carouselImages} />
+        <Rec recommendedClubs={recommendedClubs} text="Recommended Clubs" />
+        <Rec recommendedClubs={recommendedClubs} text="Previously Visited" />
+        <Rec recommendedClubs={recommendedClubs} text="Upcoming Parties" />
+        <Rec recommendedClubs={recommendedClubs} text="Recommended Clubs" />
+        <Rec recommendedClubs={recommendedClubs} text="Previously Visited" />
+        <View style={{ height: 100 }} />
+      </ScrollView>
       <BottomNav />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  view: {
+  safeArea: {
     flex: 1,
     backgroundColor: "white",
+    paddingTop: StatusBar.currentHeight || 0,
+  },
+  scrollContainer: {
+    paddingBottom: 120,
   },
   mainBanner: {
     alignSelf: "center",

@@ -2,11 +2,11 @@ import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-export default function Rec({ recommendedClubs }) {
+export default function Rec({ recommendedClubs, text }) {
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Recommended Clubs</Text>
+        <Text style={styles.sectionTitle}>{text}</Text>
         <Feather name="chevron-right" size={24} color="#898686" />
       </View>
       <ScrollView

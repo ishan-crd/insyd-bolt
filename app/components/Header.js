@@ -27,15 +27,12 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 25,
-  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 18,
+    paddingTop: 0,
   },
   logoContainer: {
     height: 40,
@@ -53,7 +50,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     position: "absolute",
-    top: 2.4,
+    top: 2,
     left: 5.5,
     borderRadius: 10,
   },
