@@ -19,7 +19,7 @@ import SecondRec from "./components/SecondRec";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function index() {
+export default function Index() {
   const featuredClubs = [
     {
       id: 1,
@@ -51,11 +51,11 @@ export default function index() {
     },
   ];
   const carouselImages = [
-    "https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg",
-    "https://images.pexels.com/photos/2114365/pexels-photo-2114365.jpeg",
-    "https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg",
-    "https://images.pexels.com/photos/1839919/pexels-photo-1839919.jpeg",
-    "https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg",
+    require("../assets/images/whiteclub.png"),
+    require("../assets/images/clubbw.png"),
+    require("../assets/images/playboy.jpg"),
+    require("../assets/images/restaurantkitty.png"),
+    require("../assets/images/whiteclub.png"),
   ];
 
   const [fontsLoaded, setFontsLoaded] = useState(false);

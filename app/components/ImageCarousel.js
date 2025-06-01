@@ -14,7 +14,10 @@ export default function ImageCarousel({ images, containerStyle }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const renderImage = ({ item }) => (
-    <Image source={{ uri: item }} style={styles.carouselImage} />
+    <Image
+      source={typeof item === "string" ? { uri: item } : item}
+      style={styles.carouselImage}
+    />
   );
 
   const handleScroll = (event) => {

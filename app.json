@@ -1,5 +1,7 @@
 {
   "expo": {
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#000000",
     "name": "insyd-bolt",
     "slug": "insyd-bolt",
     "version": "1.0.0",

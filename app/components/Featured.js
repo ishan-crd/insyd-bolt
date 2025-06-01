@@ -1,4 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function Featured({ featuredClubs }) {
@@ -8,13 +8,22 @@ export default function Featured({ featuredClubs }) {
       {featuredClubs.map((club) => (
         <View key={club.id} style={styles.clubCard}>
           <Image source={club.image} style={styles.clubImage} />
+          <View style={styles.imageOverlay} />
+          <Feather
+            name="bookmark"
+            size={27}
+            color="#ffff"
+            style={styles.bookmark}
+          />
           <View style={styles.clubInfo}>
+            <View>
+              <Text style={styles.clubName}>{club.name}</Text>
+              <Text style={styles.clubLocation}>{club.location}</Text>
+            </View>
             <View style={styles.ratingBadge}>
-              <FontAwesome name="star" size={10} color="white" />
+              <FontAwesome name="star" size={12} color="white" />
               <Text style={styles.ratingText}>{club.rating}</Text>
             </View>
-            <Text style={styles.clubName}>{club.name}</Text>
-            <Text style={styles.clubLocation}>{club.location}</Text>
           </View>
         </View>
       ))}
@@ -46,8 +55,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 8,
     left: 16,
+    gap: 190,
+    flexDirection: "row",
   },
   ratingBadge: {
+    position: "absolute",
+    left: 280,
+    top: 10,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#e91174",
@@ -59,7 +73,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     color: "white",
-    fontSize: 10,
+    fontSize: 13,
     marginLeft: 4,
   },
   clubName: {
@@ -77,5 +91,14 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
+  },
+  bookmark: {
+    position: "absolute",
+    left: "88%",
+    top: 20,
+  },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
   },
 });
