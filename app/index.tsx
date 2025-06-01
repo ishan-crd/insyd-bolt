@@ -9,14 +9,47 @@ import {
   View,
 } from "react-native";
 import BottomNav from "./components/BottomNav";
+import Featured from "./components/Featured";
+import Filter from "./components/Filter";
 import Header from "./components/Header";
 import ImageCarousel from "./components/ImageCarousel";
 import Rec from "./components/Rec";
 import SearchBar from "./components/SearchBar";
+import SecondRec from "./components/SecondRec";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function Index() {
+export default function index() {
+  const featuredClubs = [
+    {
+      id: 1,
+      name: "Privee",
+      location: "Delhi NCR",
+      rating: "4.8",
+      image: require("../assets/images/restaurantkitty.png"),
+    },
+    {
+      id: 2,
+      name: "PlayBoy",
+      location: "Delhi NCR",
+      rating: "4.5",
+      image: require("../assets/images/playboy.jpg"),
+    },
+    {
+      id: 3,
+      name: "Club BW",
+      location: "Delhi NCR",
+      rating: "4.5",
+      image: require("../assets/images/clubbw.png"),
+    },
+    {
+      id: 4,
+      name: "White Club",
+      location: "Delhi NCR",
+      rating: "4.1",
+      image: require("../assets/images/whiteclub.png"),
+    },
+  ];
   const carouselImages = [
     "https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg",
     "https://images.pexels.com/photos/2114365/pexels-photo-2114365.jpeg",
@@ -80,15 +113,22 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Header />
         <SearchBar />
-        <ImageCarousel images={carouselImages} />
-        <Rec recommendedClubs={recommendedClubs} text="Recommended Clubs" />
-        <Rec recommendedClubs={recommendedClubs} text="Previously Visited" />
+        <ImageCarousel images={carouselImages} containerStyle={{}} />
+        <Filter />
+        <Rec
+          recommendedClubs={recommendedClubs}
+          text="What are you looking for?"
+        />
+        <SecondRec
+          recommendedClubs={recommendedClubs}
+          text="You need to go here."
+        />
         <Rec recommendedClubs={recommendedClubs} text="Upcoming Parties" />
-        <Rec recommendedClubs={recommendedClubs} text="Recommended Clubs" />
-        <Rec recommendedClubs={recommendedClubs} text="Previously Visited" />
+        <Featured featuredClubs={featuredClubs} />
         <View style={{ height: 100 }} />
       </ScrollView>
       <BottomNav />
@@ -99,17 +139,10 @@ export default function Index() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     paddingTop: StatusBar.currentHeight || 0,
   },
   scrollContainer: {
     paddingBottom: 120,
-  },
-  mainBanner: {
-    alignSelf: "center",
-    width: "90%",
-    height: 195,
-    marginTop: 28,
-    borderRadius: 22,
   },
 });

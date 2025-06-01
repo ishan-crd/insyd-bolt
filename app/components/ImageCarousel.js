@@ -19,7 +19,8 @@ export default function ImageCarousel({ images, containerStyle }) {
 
   const handleScroll = (event) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
-    const index = Math.round(scrollPosition / (width * 0.9));
+    const imageWidth = width * 0.93; // Match container width
+    const index = Math.round(scrollPosition / imageWidth);
     if (index !== currentIndex && index >= 0 && index < images.length) {
       setCurrentIndex(index);
     }
@@ -46,7 +47,7 @@ export default function ImageCarousel({ images, containerStyle }) {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        snapToInterval={width * 0.9}
+        snapToInterval={width * 0.93} // Match container width
         decelerationRate="fast"
         contentContainerStyle={styles.carouselContent}
       />
@@ -58,7 +59,7 @@ export default function ImageCarousel({ images, containerStyle }) {
 const styles = StyleSheet.create({
   carouselContainer: {
     alignSelf: "center",
-    width: "90%",
+    width: "93%",
     height: 195,
     marginTop: 28,
     borderRadius: 22,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   carouselImage: {
-    width: width * 0.9,
+    width: width * 0.93,
     height: 195,
     borderRadius: 22,
     resizeMode: "cover",
@@ -83,8 +84,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dot: {
-    width: 8,
-    height: 8,
+    width: 5,
+    height: 5,
     borderRadius: 4,
     backgroundColor: "white",
     marginHorizontal: 4,

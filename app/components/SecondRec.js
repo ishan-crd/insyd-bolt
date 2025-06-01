@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-SemiBold",
   },
   clubImage: {
-    width: 114,
-    height: 152,
+    width: 340,
+    height: 130,
     marginRight: 14,
     borderRadius: 21,
     left: 12,

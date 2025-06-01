@@ -21,19 +21,19 @@ export default function FloatingBottomNav() {
 const styles = StyleSheet.create({
   floatingWrapper: {
     position: "absolute",
-    bottom: 30,
+    bottom: 40,
     left: 0,
     right: 0,
     alignItems: "center",
     zIndex: 100, // ensure it floats over other content
   },
   bottomNav: {
-    width: "90%",
+    width: "85%",
     height: 65,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 53,
+    paddingHorizontal: 40,
     backgroundColor: "white",
     borderRadius: 15,
     shadowColor: "#000",
