@@ -1,14 +1,24 @@
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function FloatingBottomNav() {
+export default function BottomNav() {
+  const router = useRouter();
+
+  const handleExplorePress = () => {
+    console.log("Navigate to explore"); // Debug log
+    router.push("/explore");
+  };
+
   return (
     <View style={styles.floatingWrapper}>
       <View style={styles.bottomNav}>
         <View style={styles.navItem}>
           <MaterialIcons name="home" size={34} color="#000" />
         </View>
-        <Feather name="search" size={30} color="#b9bcbe" />
+        <TouchableOpacity onPress={handleExplorePress}>
+          <Feather name="search" size={30} color="#b9bcbe" />
+        </TouchableOpacity>
         <MaterialIcons name="local-activity" size={30} color="#b9bcbe" />
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>IG</Text>

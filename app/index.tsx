@@ -144,7 +144,7 @@ export default function Index() {
         />
         <View style={{ height: 100 }} />
       </ScrollView>
-      <BottomNav />
+      <BottomNav onPress={() => router.push("/explore.js")} />
     </SafeAreaView>
   );
 }

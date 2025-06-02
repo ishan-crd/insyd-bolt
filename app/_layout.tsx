@@ -1,11 +1,14 @@
 import { Stack } from "expo-router";
+import { TicketProvider } from "./TicketContext";
 
-export default function Layout() {
+export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="club-card" />
-      <Stack.Screen name="ticket" />
-    </Stack>
+    <TicketProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="club-card" />
+        <Stack.Screen name="ticket" />
+      </Stack>
+    </TicketProvider>
   );
 }
