@@ -1,4 +1,5 @@
 import * as Font from "expo-font";
+import { useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,6 +18,7 @@ import Rec from "./components/Rec";
 import SearchBar from "./components/SearchBar";
 import SecondRec from "./components/SecondRec";
 
+const router = useRouter();
 SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
@@ -113,12 +115,20 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Header />
+      <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        stickyHeaderIndices={[1]}
+        showsVerticalScrollIndicator={false}
+      >
+        <Header onPress={() => router.push("/ticket")} />
         <SearchBar />
-        <ImageCarousel images={carouselImages} containerStyle={{}} />
         <Filter />
+        <ImageCarousel images={carouselImages} containerStyle={{}} />
         <Rec
           recommendedClubs={recommendedClubs}
           text="What are you looking for?"
@@ -128,7 +138,10 @@ export default function Index() {
           text="You need to go here."
         />
         <Rec recommendedClubs={recommendedClubs} text="Upcoming Parties" />
-        <Featured featuredClubs={featuredClubs} />
+        <Featured
+          featuredClubs={featuredClubs}
+          onPress={() => router.push("/club-card")}
+        />
         <View style={{ height: 100 }} />
       </ScrollView>
       <BottomNav />

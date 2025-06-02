@@ -31,7 +31,7 @@ export default function Filter() {
 
 const styles = StyleSheet.create({
   filterSection: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 17,

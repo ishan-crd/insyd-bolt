@@ -1,12 +1,16 @@
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Featured({ featuredClubs }) {
+export default function Featured({ featuredClubs, onPress }) {
   return (
     <View style={styles.featuredSection}>
       <Text style={styles.sectionTitle}>FEATURED</Text>
       {featuredClubs.map((club) => (
-        <View key={club.id} style={styles.clubCard}>
+        <TouchableOpacity
+          key={club.id}
+          style={styles.clubCard}
+          onPress={onPress}
+        >
           <Image source={club.image} style={styles.clubImage} />
           <View style={styles.imageOverlay} />
           <Feather
@@ -25,7 +29,7 @@ export default function Featured({ featuredClubs }) {
               <Text style={styles.ratingText}>{club.rating}</Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
   );

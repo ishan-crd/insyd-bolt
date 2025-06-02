@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Header() {
+export default function Header({ onPress }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -15,10 +15,8 @@ export default function Header() {
           <TouchableOpacity style={styles.themeButton}>
             <MaterialIcons name="wb-sunny" size={24} color="#424242" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton}>
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
+          <TouchableOpacity onPress={onPress}>
+            <MaterialIcons name="local-activity" size={30} color="#424242" />
           </TouchableOpacity>
         </View>
       </View>
@@ -33,6 +31,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
     paddingTop: 0,
+    paddingBottom: 10,
   },
   logoContainer: {
     height: 40,

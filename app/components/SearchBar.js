@@ -3,20 +3,27 @@ import { StyleSheet, TextInput, View } from "react-native";
 
 export default function SearchBar() {
   return (
-    <View style={styles.searchContainer}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Find clubs nearby"
-        placeholderTextColor="#999"
-      />
-      <Feather name="search" size={17} color="#999" style={styles.searchIcon} />
+    <View style={styles.boxforSroll}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Find clubs nearby"
+          placeholderTextColor="#999"
+        />
+        <Feather
+          name="search"
+          size={17}
+          color="#999"
+          style={styles.searchIcon}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   searchContainer: {
-    marginTop: 15,
+    marginTop: 5,
     marginHorizontal: 16,
     position: "relative",
   },
@@ -28,9 +35,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(0, 0, 0, 0.08)",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10.3,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.13,
+    shadowRadius: 5.3,
     elevation: 4,
     fontFamily: "Montserrat-Medium",
   },
@@ -38,5 +45,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 12,
     top: 12,
+  },
+  boxforSroll: {
+    backgroundColor: "white",
+    height: 67,
+    borderCurve: 20,
+    borderColor: "rgba(0, 0, 0, 0.08)",
   },
 });
