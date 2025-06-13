@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0, 0, 0, 0.08)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.13,
+    shadowOpacity: 0.08,
     shadowRadius: 5.3,
     elevation: 4,
     fontFamily: "Montserrat-Medium",

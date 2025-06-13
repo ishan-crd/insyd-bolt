@@ -10,6 +10,10 @@ export default function BottomNav() {
     router.push("/explore");
   };
 
+  const handleTicketPress = () => {
+    router.push("/ticket");
+  };
+
   return (
     <View style={styles.floatingWrapper}>
       <View style={styles.bottomNav}>
@@ -19,7 +23,9 @@ export default function BottomNav() {
         <TouchableOpacity onPress={handleExplorePress}>
           <Feather name="search" size={30} color="#b9bcbe" />
         </TouchableOpacity>
-        <MaterialIcons name="local-activity" size={30} color="#b9bcbe" />
+        <TouchableOpacity onPress={handleTicketPress}>
+          <MaterialIcons name="local-activity" size={30} color="#b9bcbe" />
+        </TouchableOpacity>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>IG</Text>
         </View>
@@ -31,21 +37,21 @@ export default function BottomNav() {
 const styles = StyleSheet.create({
   floatingWrapper: {
     position: "absolute",
-    bottom: 40,
+    bottom: 15,
     left: 0,
     right: 0,
     alignItems: "center",
-    zIndex: 100, // ensure it floats over other content
+    zIndex: 100,
   },
   bottomNav: {
-    width: "85%",
+    width: "100%",
     height: 65,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 40,
     backgroundColor: "white",
-    borderRadius: 15,
+    borderRadius: 0,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,

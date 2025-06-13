@@ -55,4 +55,8 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexDirection: "row",
   },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
+  },
 });

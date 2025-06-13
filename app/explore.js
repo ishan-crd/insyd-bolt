@@ -1,20 +1,43 @@
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
+import Header from "./components/Header";
+import SearchBar from "./components/SearchBar";
+
 import { Feather } from "lucide-react-native";
 // Club data for the discover section
 const discoverClubs = [
-  { id: 1, title: "Nightclub", subtitle: "DJ Set" },
-  { id: 2, title: "Nightclub", subtitle: "DJ Set" },
-  { id: 3, title: "Nightclub", subtitle: "DJ Set" },
-  { id: 4, title: "Nightclub", subtitle: "DJ Set" },
+  {
+    id: 1,
+    title: "Club BW",
+    subtitle: "New Delhi",
+    imageUrl: require("../assets/images/clubbw.png"),
+  },
+  {
+    id: 2,
+    title: "Playboy",
+    subtitle: "Vasant Kunj",
+    imageUrl: require("../assets/images/playboy.jpg"),
+  },
+  {
+    id: 3,
+    title: "Privee",
+    subtitle: "Noida",
+    imageUrl: require("../assets/images/restaurantkitty.png"),
+  },
+  {
+    id: 4,
+    title: "White Club",
+    subtitle: "Greater Noida",
+    imageUrl: require("../assets/images/whiteclub.png"),
+  },
 ];
 
 export default function Explore() {
@@ -24,39 +47,8 @@ export default function Explore() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          {/* Logo */}
-          <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>insyd</Text>
-            <View style={styles.logoDotWhite} />
-            <View style={styles.logoDotPink} />
-          </View>
-
-          {/* Menu button */}
-          <TouchableOpacity style={styles.menuButton}>
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-            <View style={styles.menuLine} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Search bar */}
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Find clubs nearby"
-            placeholderTextColor="#999"
-          />
-          <Feather
-            name="search"
-            size={17}
-            color="#000"
-            style={styles.searchIcon}
-          />
-        </View>
-
-        {/* Discover clubs section */}
+        <Header />
+        <SearchBar />
         <View style={styles.discoverSection}>
           <Text style={styles.sectionTitle}>Discover clubs</Text>
 
@@ -64,7 +56,7 @@ export default function Explore() {
             {discoverClubs.map((club) => (
               <TouchableOpacity key={club.id} style={styles.clubItem}>
                 <View style={styles.clubItemLeft}>
-                  <View style={styles.clubAvatar} />
+                  <Image source={club.imageUrl} style={styles.clubAvatar} />
                   <View style={styles.clubInfo}>
                     <Text style={styles.clubTitle}>{club.title}</Text>
                     <Text style={styles.clubSubtitle}>{club.subtitle}</Text>
@@ -75,17 +67,25 @@ export default function Explore() {
             ))}
           </View>
         </View>
-
         {/* Recommended clubs section */}
         <View style={styles.recommendedSection}>
           <Text style={styles.sectionTitle}>Recommended clubs</Text>
 
           <View style={styles.recommendedContainer}>
-            <View style={styles.largeCard} />
+            <Image
+              source={require("../assets/images/playboy.jpg")}
+              style={styles.largeCard}
+            />
 
             <View style={styles.smallCardsContainer}>
-              <View style={styles.smallCard} />
-              <View style={styles.smallCard} />
+              <Image
+                source={require("../assets/images/restaurantkitty.png")}
+                style={styles.smallCard}
+              />
+              <Image
+                source={require("../assets/images/clubbw.png")}
+                style={styles.smallCard}
+              />
             </View>
           </View>
         </View>
@@ -103,95 +103,18 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 393,
     alignSelf: "center",
-    borderWidth: 0.5,
-    borderColor: "#000",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingTop: 18,
-    marginBottom: 12,
-  },
-  logoContainer: {
-    position: "relative",
-    height: 32,
-  },
-  logoText: {
-    fontFamily: "Montserrat",
-    fontWeight: "bold",
-    color: "#424242",
-    fontSize: 26,
-  },
-  logoDotWhite: {
-    position: "absolute",
-    width: 8,
-    height: 8,
-    backgroundColor: "#fff",
-    borderRadius: 4,
-    top: 2,
-    left: 0,
-  },
-  logoDotPink: {
-    position: "absolute",
-    width: 8,
-    height: 8,
-    backgroundColor: "#e81174",
-    borderRadius: 4,
-    top: 1,
-    left: 0,
-  },
-  menuButton: {
-    padding: 4,
-  },
-  menuLine: {
-    width: 24,
-    height: 4,
-    backgroundColor: "#424242",
-    borderRadius: 49,
-    marginVertical: 3.5,
-  },
-  searchContainer: {
-    position: "relative",
-    marginHorizontal: 16,
-    marginBottom: 34,
-  },
-  searchInput: {
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 40,
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.08)",
-    backgroundColor: "#fff",
-    fontFamily: "Montserrat",
-    fontWeight: "200",
-    fontSize: 14,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 11.3,
-    elevation: 5,
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 16,
-    top: 11.5,
   },
   discoverSection: {
     marginHorizontal: 16,
-    marginBottom: 41,
+    marginBottom: 30,
+    marginTop: 10,
   },
   sectionTitle: {
     fontFamily: "Montserrat",
     fontWeight: "600",
     color: "#424242",
     fontSize: 18,
-    marginBottom: 40,
+    marginBottom: 16,
   },
   clubsList: {
     gap: 16,
