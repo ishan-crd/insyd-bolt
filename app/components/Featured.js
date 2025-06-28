@@ -1,108 +1,121 @@
-import { Feather, FontAwesome } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+const { width } = Dimensions.get("window");
+const CARD_WIDTH = 167;
+const CARD_HEIGHT = 194;
+const CARD_GAP = 25.56;
+const TOTAL_HORIZONTAL_PADDING = 40; // 20 left + 20 right
+const COLUMNS = 2;
+const TOTAL_GAP = CARD_GAP * (COLUMNS - 1);
+const GRID_WIDTH = CARD_WIDTH * COLUMNS + TOTAL_GAP;
 
 export default function Featured({ featuredClubs, onPress }) {
   return (
     <View style={styles.featuredSection}>
-      <Text style={styles.sectionTitle}>FEATURED</Text>
-      {featuredClubs.map((club) => (
-        <TouchableOpacity
-          key={club.id}
-          style={styles.clubCard}
-          onPress={onPress}
-        >
-          <Image source={club.image} style={styles.clubImage} />
-          <View style={styles.imageOverlay} />
-          <Feather
-            name="bookmark"
-            size={27}
-            color="#ffff"
-            style={styles.bookmark}
-          />
-          <View style={styles.clubInfo}>
-            <View>
-              <Text style={styles.clubName}>{club.name}</Text>
-              <Text style={styles.clubLocation}>{club.location}</Text>
-            </View>
-            <View style={styles.ratingBadge}>
-              <FontAwesome name="star" size={12} color="white" />
-              <Text style={styles.ratingText}>{club.rating}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      ))}
+      <View style={styles.featuredGrid}>
+        {featuredClubs.map((club) => (
+          <TouchableOpacity
+            key={club.id}
+            style={styles.clubCard}
+            onPress={onPress}
+          >
+            <Image source={club.image} style={styles.clubImage} />
+            <View style={styles.imageOverlay} />
+
+            <View style={styles.clubInfoWrapper}>
+              <View style={styles.clubInfoTop}>
+                <Text style={styles.clubName}>{club.name}</Text>
+              </View>
+              <View style={styles.clubInfoBottom}>
+                <Text style={styles.clubLocation}>{club.location}</Text>
+                </View>
+              </View>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   featuredSection: {
-    padding: 16,
+    paddingHorizontal: 0,
+    marginTop: 20,
   },
   sectionTitle: {
-    fontSize: 13,
-    color: "#B1B0B0",
-    textAlign: "center",
-    marginBottom: 24,
+    fontSize: 18,
+    color: "#FFFFFF",
+    textAlign: "left",
+    marginBottom: 16,
+    fontFamily: "NeuePlakExtendedBlack",
+  },
+  featuredGrid: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    gap: CARD_GAP,
+    maxWidth: GRID_WIDTH,
   },
   clubCard: {
-    height: 199,
-    borderRadius: 22,
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+        borderTopLeftRadius: 30,
+    borderTopRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 30,
     overflow: "hidden",
-    marginBottom: 26,
+    marginBottom: CARD_GAP,
+    position: "relative",
   },
   clubImage: {
     width: "100%",
     height: "100%",
-  },
-  clubInfo: {
-    position: "absolute",
-    bottom: 8,
-    left: 16,
-    gap: 190,
-    flexDirection: "row",
-  },
-  ratingBadge: {
-    position: "absolute",
-    left: 280,
-    top: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#e91174",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 15,
-    alignSelf: "flex-start",
-    marginBottom: 8,
-  },
-  ratingText: {
-    color: "white",
-    fontSize: 13,
-    marginLeft: 4,
-  },
-  clubName: {
-    color: "white",
-    fontSize: 35,
-    fontWeight: "600",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
-  },
-  clubLocation: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "500",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
-  },
-  bookmark: {
-    position: "absolute",
-    left: "88%",
-    top: 20,
+    resizeMode: "cover",
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.15)",
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
+  },
+  clubInfoWrapper: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+  },
+  clubInfoTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  clubInfoBottom: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 6,
+  },
+  clubName: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+    fontFamily: "NeuePlakExtendedBlack",
+  },
+  clubLocation: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "500",
+    opacity: 0.85,
+  },
+  ratingBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#EC4899",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  ratingText: {
+    color: "white",
+    fontSize: 12,
+    marginLeft: 4,
+    fontWeight: "600",
   },
 });

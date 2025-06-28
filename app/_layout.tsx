@@ -6,6 +6,7 @@ export default function RootLayout() {
     <TicketProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="home" />
         <Stack.Screen name="club-card" />
         <Stack.Screen name="ticket" />
       </Stack>

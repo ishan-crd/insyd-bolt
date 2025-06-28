@@ -1,102 +1,40 @@
 import * as Font from "expo-font";
 import { useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Image,
+  ImageSourcePropType,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
   View,
-} from "react-native";
-import BottomNav from "./components/BottomNav";
-import Featured from "./components/Featured";
-import Filter from "./components/Filter";
-import Header from "./components/Header";
-import ImageCarousel from "./components/ImageCarousel";
-import Rec from "./components/Rec";
-import SearchBar from "./components/SearchBar";
-import SecondRec from "./components/SecondRec";
+} from 'react-native';
 
-const router = useRouter();
 SplashScreen.preventAutoHideAsync();
 
-export default function Index() {
-  const featuredClubs = [
-    {
-      id: 1,
-      name: "Privee",
-      location: "Delhi NCR",
-      rating: "4.8",
-      image: require("../assets/images/restaurantkitty.png"),
-    },
-    {
-      id: 2,
-      name: "PlayBoy",
-      location: "Delhi NCR",
-      rating: "4.5",
-      image: require("../assets/images/playboy.jpg"),
-    },
-    {
-      id: 3,
-      name: "Club BW",
-      location: "Delhi NCR",
-      rating: "4.5",
-      image: require("../assets/images/clubbw.png"),
-    },
-    {
-      id: 4,
-      name: "White Club",
-      location: "Delhi NCR",
-      rating: "4.1",
-      image: require("../assets/images/whiteclub.png"),
-    },
-  ];
-  const carouselImages = [
-    require("../assets/images/whiteclub.png"),
-    require("../assets/images/clubbw.png"),
-    require("../assets/images/playboy.jpg"),
-    require("../assets/images/restaurantkitty.png"),
-    require("../assets/images/whiteclub.png"),
-  ];
-
+const Index: React.FC = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [code, setCode] = useState(["", "", "", ""]);
+  const router = useRouter();
+  const animation = useRef(new Animated.Value(0)).current;
 
-  const recommendedClubs = [
-    {
-      id: 1,
-      image:
-        "https://images.pexels.com/photos/2114365/pexels-photo-2114365.jpeg",
-    },
-    {
-      id: 2,
-      image:
-        "https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.pexels.com/photos/2114365/pexels-photo-2114365.jpeg",
-    },
-    {
-      id: 4,
-      image:
-        "https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg",
-    },
-    {
-      id: 5,
-      image:
-        "https://images.pexels.com/photos/2114365/pexels-photo-2114365.jpeg",
-    },
-  ];
+  const discoBallImage: ImageSourcePropType = require('../assets/images/disco-ball.png');
 
   useEffect(() => {
     async function loadFonts() {
       try {
         await Font.loadAsync({
+          "NeuePlakExtendedBlack": require("../assets/fonts/NeuePlakExtendedBlack.ttf"),
+          "NeuePlakExtendedBold": require("../assets/fonts/NeuePlakExtendedBold.ttf"),
           "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
-          "Montserrat-SemiBold": require("../assets/fonts/Montserrat-SemiBold.ttf"),
-          "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
+          "Montserrat-Light": require("../assets/fonts/Montserrat-Light.ttf"),
         });
         setFontsLoaded(true);
       } catch (error) {
@@ -109,53 +47,189 @@ export default function Index() {
     loadFonts();
   }, []);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  const handleStart = () => {
+    Animated.timing(animation, {
+      toValue: -140, // moves up
+      duration: 600,
+      useNativeDriver: true,
+    }).start(() => {
+      setShowCodeInput(true);
+    });
+  };
+
+  if (!fontsLoaded) return null;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar
-        translucent={true}
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        stickyHeaderIndices={[1]}
-        showsVerticalScrollIndicator={false}
+    <SafeAreaView style={styles.safeContainer}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Header onPress={() => router.push("/ticket")} />
-        <SearchBar />
-        <Filter />
-        <ImageCarousel images={carouselImages} containerStyle={{}} />
-        <Rec
-          recommendedClubs={recommendedClubs}
-          text="What are you looking for?"
-        />
-        <SecondRec
-          recommendedClubs={recommendedClubs}
-          text="You need to go here."
-        />
-        <Rec recommendedClubs={recommendedClubs} text="Upcoming Parties" />
-        <Featured
-          featuredClubs={featuredClubs}
-          onPress={() => router.push("/club-card")}
-        />
-        <View style={{ height: 100 }} />
-      </ScrollView>
-      <BottomNav onPress={() => router.push("/explore.js")} />
+        {/* Animated Block */}
+        <Animated.View style={[styles.animatedBlock, { transform: [{ translateY: animation }] }]}>
+          <Image
+            source={discoBallImage}
+            style={styles.discoBall}
+            resizeMode="contain"
+          />
+
+          <Text style={styles.logoText}>
+            <Text style={styles.logoPink}>in</Text>syd
+          </Text>
+          <Text style={styles.tagline}>Your exclusive pass to the night.</Text>
+
+          {showCodeInput && (
+            <View style={styles.codeContainer}>
+              <Text style={styles.codeLabel}>Enter Code</Text>
+              <View style={styles.codeBoxes}>
+                {[0, 1, 2, 3].map((i) => (
+                  <TextInput
+                    key={i}
+                    style={styles.codeBox}
+                    maxLength={1}
+                    keyboardType="number-pad"
+                    placeholder=""
+                    placeholderTextColor="#999"
+                    value={code[i]}
+                    onChangeText={(text) => {
+                      const newCode = [...code];
+                      newCode[i] = text;
+                      setCode(newCode);
+                    }}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+        </Animated.View>
+
+        {/* Button */}
+        {!showCodeInput && (
+          <View style={styles.buttonWrapperInitial}>
+            <TouchableOpacity style={styles.button} onPress={handleStart}>
+              <Text style={styles.buttonText}>Start Partying</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {showCodeInput && (
+          <Animated.View style={{ transform: [{ translateY: animation }] }}>
+            <View style={styles.buttonWrapperAfter}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  const finalCode = code.join("");
+                  if (finalCode === "1234") {
+                    router.replace("/home");
+                  } else {
+                    alert("Invalid Code. Try again.");
+                  }
+                }}
+              >
+                <Text style={styles.buttonText}>Enter</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        )}
+
+        {/* Footer Note */}
+        <View style={styles.footer}>
+          <Text style={styles.noteText}>
+            Invite only. Access requires a valid invitation code.
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safeArea: {
+  safeContainer: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingTop: StatusBar.currentHeight || 0,
+    backgroundColor: '#000',
   },
-  scrollContainer: {
-    paddingBottom: 120,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  animatedBlock: {
+    alignItems: 'center',
+    marginTop: -70,
+  },
+  discoBall: {
+    width: 274,
+    height: 474,
+    zIndex: 1,
+  },
+  logoText: {
+    fontSize: 40.58,
+    fontFamily: "NeuePlakExtendedBlack",
+    color: '#fff',
+    marginTop: -40,
+  },
+  logoPink: {
+    color: '#EC4899',
+  },
+  tagline: {
+    fontSize: 13.52,
+    color: '#ccc',
+    marginTop: 8,
+    fontFamily: "Montserrat-Light",
+  },
+  codeContainer: {
+    alignItems: 'center',
+    marginTop: 40,
+  },
+  codeLabel: {
+    color: '#fff',
+    fontFamily: 'Montserrat-Medium',
+    fontSize: 14,
+    marginBottom: 12,
+  },
+  codeBoxes: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 10,
+  },
+  codeBox: {
+    width: 48,
+    height: 54,
+    borderRadius: 12,
+    backgroundColor: 'rgba(15, 15, 15, 0.74)',
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 22,
+    fontFamily: 'Montserrat-Medium',
+  },
+  button: {
+    backgroundColor: '#EC4899',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 999,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  buttonWrapperInitial: {
+    position: 'absolute',
+    bottom: 70,
+  },
+  buttonWrapperAfter: {
+    marginTop: 30,
+    alignItems: 'center',
+  },
+  noteText: {
+    color: '#aaa',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  footer: {
+    marginTop: 'auto',
+    marginBottom: 30,
   },
 });
+
+export default Index;
