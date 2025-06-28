@@ -134,10 +134,10 @@ export default function Home() {
 
           </TouchableOpacity>
         </View>
-
+        <View>
        <Image source={require("../assets/images/playboy.jpg")} style={styles.heroImage} />
        <View style={styles.imageOverlay} />
-
+       </View>
         <View style={styles.heroTextWrapper}>
           <Text style={styles.heroTitle}>Playboy</Text>
           <Text style={styles.heroSub}><Text style={styles.logoTextexc}><Text style={styles.logoPinkexc}>in</Text>syd</Text> Exclusive</Text>
