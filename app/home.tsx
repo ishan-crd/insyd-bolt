@@ -118,8 +118,8 @@ export default function Home() {
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.headerWrapper}>
           <Text style={styles.logoText}><Text style={styles.logoPink}>in</Text>syd</Text>
-          <TouchableOpacity>
-            <MaterialIcons name="local-activity" size={30} color="#ffff" />
+          <TouchableOpacity onPress={() => router.push("/ticket")}>
+            <MaterialIcons name="local-activity" size={30} color="#fff" />
           </TouchableOpacity>
         </View>
 

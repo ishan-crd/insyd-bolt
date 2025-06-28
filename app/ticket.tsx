@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
   ScrollView,
@@ -29,21 +29,12 @@ export default function TicketScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="white" />
+        <StatusBar barStyle="light-content" backgroundColor="black" />
 
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Feather name="arrow-left" size={24} color="black" />
-          </TouchableOpacity>
-          <View style={styles.titleContainer}>
-            <View style={styles.logoContainer}>
-              <Text style={styles.logoText}>insyd</Text>
-              <View style={styles.logoDot} />
-            </View>
-            <Text style={styles.titleText}>Ticket</Text>
-          </View>
-          <TouchableOpacity onPress={() => router.push("/")}>
-            <Feather name="x" size={24} color="black" />
+        <View style={styles.headerWrapper}>
+          <Text style={styles.logoText}><Text style={styles.logoPink}>in</Text>syd</Text>
+          <TouchableOpacity>
+            <MaterialIcons name="local-activity" size={30} color="#ffff" />
           </TouchableOpacity>
         </View>
 
@@ -60,7 +51,7 @@ export default function TicketScreen() {
               </Text>
               <TouchableOpacity
                 style={styles.browseButton}
-                onPress={() => router.push("/")}
+                onPress={() => router.push("/home")}
               >
                 <Text style={styles.browseButtonText}>Browse Venues</Text>
               </TouchableOpacity>
@@ -121,14 +112,22 @@ export default function TicketScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "black",
   },
-  header: {
+  headerWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "white",
+    backgroundColor: "black",
+  },
+  logoText: {
+    fontSize: 32,
+    color: "#fff",
+    fontFamily: "NeuePlakExtendedBlack",
+  },
+  logoPink: {
+    color: "#EC4899",
   },
   content: {
     flex: 1,
@@ -136,36 +135,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 20,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logoContainer: {
-    position: "relative",
-    marginRight: 8,
-  },
-  logoText: {
-    fontFamily: "Montserrat-Bold",
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "black",
-  },
-  logoDot: {
-    position: "absolute",
-    top: 2,
-    left: 0,
-    width: 9,
-    height: 9,
-    backgroundColor: "#e81174",
-    borderRadius: 4.62,
-  },
-  titleText: {
-    fontSize: 30,
-    fontWeight: "500",
-    color: "black",
-    fontFamily: "Montserrat-Bold",
   },
   emptyState: {
     alignItems: "center",
