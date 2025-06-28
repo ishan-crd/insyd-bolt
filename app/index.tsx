@@ -22,6 +22,7 @@ const Index: React.FC = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [showCodeInput, setShowCodeInput] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
+  const inputRefs = useRef([]);
   const router = useRouter();
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -49,7 +50,7 @@ const Index: React.FC = () => {
 
   const handleStart = () => {
     Animated.timing(animation, {
-      toValue: -140, // moves up
+      toValue: -140,
       duration: 600,
       useNativeDriver: true,
     }).start(() => {
@@ -65,7 +66,6 @@ const Index: React.FC = () => {
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* Animated Block */}
         <Animated.View style={[styles.animatedBlock, { transform: [{ translateY: animation }] }]}>
           <Image
             source={discoBallImage}
@@ -85,6 +85,7 @@ const Index: React.FC = () => {
                 {[0, 1, 2, 3].map((i) => (
                   <TextInput
                     key={i}
+                    ref={(ref) => (inputRefs.current[i] = ref)}
                     style={styles.codeBox}
                     maxLength={1}
                     keyboardType="number-pad"
@@ -95,6 +96,9 @@ const Index: React.FC = () => {
                       const newCode = [...code];
                       newCode[i] = text;
                       setCode(newCode);
+                      if (text && i < 3) {
+                        inputRefs.current[i + 1]?.focus();
+                      }
                     }}
                   />
                 ))}
@@ -103,7 +107,6 @@ const Index: React.FC = () => {
           )}
         </Animated.View>
 
-        {/* Button */}
         {!showCodeInput && (
           <View style={styles.buttonWrapperInitial}>
             <TouchableOpacity style={styles.button} onPress={handleStart}>
@@ -131,7 +134,6 @@ const Index: React.FC = () => {
           </Animated.View>
         )}
 
-        {/* Footer Note */}
         <View style={styles.footer}>
           <Text style={styles.noteText}>
             Invite only. Access requires a valid invitation code.
@@ -182,19 +184,19 @@ const styles = StyleSheet.create({
   },
   codeLabel: {
     color: '#fff',
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: 'NeuePlakExtendedBold',
     fontSize: 14,
     marginBottom: 12,
   },
   codeBoxes: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 10,
+    gap: 14,
+    marginBottom: 0,
   },
   codeBox: {
-    width: 48,
-    height: 54,
+    width: 52,
+    height: 58,
     borderRadius: 12,
     backgroundColor: 'rgba(15, 15, 15, 0.74)',
     color: '#fff',

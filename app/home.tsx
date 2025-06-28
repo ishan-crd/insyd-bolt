@@ -136,6 +136,7 @@ export default function Home() {
         </View>
 
        <Image source={require("../assets/images/playboy.jpg")} style={styles.heroImage} />
+       <View style={styles.imageOverlay} />
 
         <View style={styles.heroTextWrapper}>
           <Text style={styles.heroTitle}>Playboy</Text>
@@ -177,6 +178,10 @@ const styles = StyleSheet.create({
   },
   logoPink: {
     color: "#EC4899",
+  },
+  imageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
   },
   logoTextexc: {
     color: "#fff",

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   clubCard: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-        borderTopLeftRadius: 30,
+    borderTopLeftRadius: 30,
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 30,
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
   },
   clubInfoWrapper: {
     position: "absolute",
-    bottom: 20,
-    left: 20,
+    bottom: 15,
+    left: 15,
     right: 20,
   },
   clubInfoTop: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 6,
+    marginTop: 0,
   },
   clubName: {
     color: "#fff",
@@ -103,14 +103,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "500",
     opacity: 0.85,
-  },
-  ratingBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#EC4899",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
   },
   ratingText: {
     color: "white",
