@@ -335,7 +335,7 @@ export default function ClubCard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "black",
   },
   fixedButtonContainer: {
     position: "absolute",
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "black",
     borderWidth: 0.5,
     borderColor: "black",
   },
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   clubName: {
-    fontFamily: "Montserrat-Medium",
+    fontFamily: "NeuePlakExtendedBlack",
     fontWeight: "600",
     fontSize: 36,
     color: "white",
