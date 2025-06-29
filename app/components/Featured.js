@@ -1,6 +1,13 @@
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const { width } = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get("window");
 const CARD_WIDTH = 167;
 const CARD_HEIGHT = 194;
 const CARD_GAP = 25.56;
@@ -17,7 +24,7 @@ export default function Featured({ featuredClubs, onPress }) {
           <TouchableOpacity
             key={club.id}
             style={styles.clubCard}
-            onPress={onPress}
+            onPress={() => onPress(club)} // Pass the club data
           >
             <Image source={club.image} style={styles.clubImage} />
             <View style={styles.imageOverlay} />
@@ -28,8 +35,8 @@ export default function Featured({ featuredClubs, onPress }) {
               </View>
               <View style={styles.clubInfoBottom}>
                 <Text style={styles.clubLocation}>{club.location}</Text>
-                </View>
               </View>
+            </View>
           </TouchableOpacity>
         ))}
       </View>

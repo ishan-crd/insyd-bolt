@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTicket } from "./TicketContext";
-import VenueCard from "./components/VanueCard";
+import VenueCard from "./components/VenueCard";
 
 export default function TicketScreen() {
   const router = useRouter();
@@ -29,12 +29,17 @@ export default function TicketScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="black" />
+        <StatusBar barStyle="light-content" backgroundColor="#000" />
 
         <View style={styles.headerWrapper}>
-          <Text style={styles.logoText}><Text style={styles.logoPink}>in</Text>syd</Text>
+          <TouchableOpacity onPress={() => router.back()}>
+            <MaterialIcons name="arrow-back" size={28} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.logoText}>
+            <Text style={styles.logoPink}>in</Text>syd
+          </Text>
           <TouchableOpacity>
-            <MaterialIcons name="local-activity" size={30} color="#ffff" />
+            <MaterialIcons name="local-activity" size={30} color="#fff" />
           </TouchableOpacity>
         </View>
 
@@ -45,6 +50,11 @@ export default function TicketScreen() {
         >
           {tickets.length === 0 ? (
             <View style={styles.emptyState}>
+              <MaterialIcons
+                name="confirmation-number"
+                size={80}
+                color="#333"
+              />
               <Text style={styles.emptyStateText}>No tickets added yet</Text>
               <Text style={styles.emptyStateSubtext}>
                 Add venues to your ticket to get started
@@ -58,6 +68,8 @@ export default function TicketScreen() {
             </View>
           ) : (
             <>
+              <Text style={styles.sectionTitle}>Your Tickets</Text>
+
               {tickets.map((ticket) => (
                 <VenueCard
                   key={ticket.venue}
@@ -68,6 +80,7 @@ export default function TicketScreen() {
               ))}
 
               <View style={styles.summaryCard}>
+                <Text style={styles.summaryTitle}>Booking Summary</Text>
                 <View style={styles.summaryRow}>
                   <Text style={styles.summaryLabel}>Total People:</Text>
                   <Text style={styles.summaryValue}>{totalPeople}</Text>
@@ -91,14 +104,18 @@ export default function TicketScreen() {
                   style={styles.clearButton}
                   onPress={clearAllTickets}
                 >
+                  <MaterialIcons name="clear-all" size={18} color="#EC4899" />
                   <Text style={styles.clearButtonText}>Clear All</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.payButton}>
-                  <Text style={styles.payButtonText}>Pay Now!</Text>
-                  <Text style={styles.payButtonSubtext}>
-                    Complete your booking
-                  </Text>
+                  <MaterialIcons name="payment" size={20} color="#fff" />
+                  <View style={styles.payButtonContent}>
+                    <Text style={styles.payButtonText}>Pay Now!</Text>
+                    <Text style={styles.payButtonSubtext}>
+                      Complete your booking
+                    </Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             </>
@@ -112,14 +129,15 @@ export default function TicketScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "#000",
   },
   headerWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
-    backgroundColor: "black",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: "#000",
   },
   logoText: {
     fontSize: 32,
@@ -131,7 +149,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   scrollContent: {
     paddingBottom: 20,
@@ -140,35 +158,55 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 80,
+    paddingHorizontal: 40,
   },
   emptyStateText: {
     fontSize: 20,
-    fontWeight: "600",
-    color: "#666",
+    fontFamily: "NeuePlakExtendedBlack",
+    color: "#fff",
     marginBottom: 8,
+    marginTop: 20,
   },
   emptyStateSubtext: {
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: "Montserrat-Light",
     color: "#999",
     textAlign: "center",
     marginBottom: 30,
+    lineHeight: 20,
   },
   browseButton: {
-    backgroundColor: "#e91174",
-    borderRadius: 25,
-    paddingHorizontal: 30,
-    paddingVertical: 12,
+    backgroundColor: "#EC4899",
+    borderRadius: 999,
+    paddingHorizontal: 32,
+    paddingVertical: 14,
   },
   browseButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+    fontFamily: "Montserrat-Medium",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontFamily: "NeuePlakExtendedBlack",
+    color: "#fff",
+    marginBottom: 20,
+    marginTop: 10,
   },
   summaryCard: {
-    backgroundColor: "#f8f9fa",
-    borderRadius: 15,
+    backgroundColor: "#111",
+    borderRadius: 20,
     padding: 20,
     marginVertical: 20,
+    borderWidth: 1,
+    borderColor: "#222",
+  },
+  summaryTitle: {
+    fontSize: 16,
+    fontFamily: "NeuePlakExtendedBold",
+    color: "#fff",
+    marginBottom: 15,
   },
   summaryRow: {
     flexDirection: "row",
@@ -177,14 +215,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   summaryLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#666",
+    fontSize: 14,
+    fontFamily: "Montserrat-Light",
+    color: "#ccc",
   },
   summaryValue: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "black",
+    fontFamily: "Montserrat-Medium",
+    color: "#fff",
   },
   totalPrice: {
     flexDirection: "row",
@@ -193,13 +231,13 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginTop: 8,
     marginBottom: 16,
-    borderTopWidth: 2,
-    borderTopColor: "#e91174",
+    borderTopWidth: 1,
+    borderTopColor: "#EC4899",
   },
   totalPriceLabel: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "black",
+    fontSize: 18,
+    fontFamily: "NeuePlakExtendedBold",
+    color: "#fff",
   },
   priceContainer: {
     flexDirection: "row",
@@ -207,14 +245,14 @@ const styles = StyleSheet.create({
   },
   currencySymbol: {
     fontSize: 18,
-    fontWeight: "500",
-    color: "#e91174",
+    fontFamily: "Montserrat-Medium",
+    color: "#EC4899",
   },
   priceValue: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: "NeuePlakExtendedBlack",
     marginLeft: 4,
-    color: "#e91174",
+    color: "#EC4899",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -224,34 +262,44 @@ const styles = StyleSheet.create({
   clearButton: {
     flex: 1,
     height: 52,
-    borderRadius: 18.91,
-    borderWidth: 1.18,
-    borderColor: "#e91174",
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "#EC4899",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
+    gap: 8,
   },
   clearButtonText: {
-    color: "#e91174",
+    color: "#EC4899",
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "bold",
+    fontFamily: "Montserrat-Medium",
   },
   payButton: {
     flex: 1.5,
     height: 52,
-    borderRadius: 18.91,
-    backgroundColor: "#e91174",
+    borderRadius: 999,
+    backgroundColor: "#EC4899",
+    flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  },
+  payButtonContent: {
     alignItems: "center",
   },
   payButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+    fontFamily: "Montserrat-Medium",
   },
   payButtonSubtext: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "500",
+    color: "#fff",
+    fontSize: 10,
+    fontFamily: "Montserrat-Light",
+    marginTop: 2,
   },
 });
