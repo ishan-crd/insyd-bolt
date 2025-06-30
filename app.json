@@ -8,7 +8,6 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "insydbolt",
-    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -40,6 +39,18 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c43a244b-1af7-45b4-a055-8c8f0da77e08"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c43a244b-1af7-45b4-a055-8c8f0da77e08"
     }
   }
 }

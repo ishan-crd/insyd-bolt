@@ -9,8 +9,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useTicket } from "./TicketContext";
 import VenueCard from "./components/VenueCard";
+import { useTicket } from "./contexts/TicketContext";
 
 export default function TicketScreen() {
   const router = useRouter();
@@ -72,7 +72,7 @@ export default function TicketScreen() {
 
               {tickets.map((ticket) => (
                 <VenueCard
-                  key={ticket.venue}
+                  key={ticket.id} // Use ticket.id instead of ticket.venue
                   ticket={ticket}
                   onRemove={removeTicket}
                   onUpdateCount={updateTicketCount}

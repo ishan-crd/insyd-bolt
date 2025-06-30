@@ -1,6 +1,6 @@
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Animated,
@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-import { useTicket } from "./TicketContext";
+import { useTicket } from "./contexts/TicketContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -104,34 +104,38 @@ export default function ClubCard() {
   const PRICE_PER_PERSON = 1000;
   const totalPrice = (menCount + womenCount) * PRICE_PER_PERSON;
 
-  // Toast animation functions
+  // Toast animation functions - FIXED VERSION (no useCallback)
   const showToastNotification = () => {
-    setShowToast(true);
-    Animated.sequence([
-      Animated.timing(toastAnimation, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.delay(2000),
-      Animated.timing(toastAnimation, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      setShowToast(false);
-    });
+    setTimeout(() => {
+      setShowToast(true);
+      toastAnimation.setValue(0);
+
+      Animated.sequence([
+        Animated.timing(toastAnimation, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.delay(2000),
+        Animated.timing(toastAnimation, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setTimeout(() => setShowToast(false), 0);
+      });
+    }, 0);
   };
 
-  // Use useCallback to prevent re-rendering
-  const updateCount = useCallback((type, increment) => {
+  // Simple counter update function
+  const updateCount = (type, increment) => {
     if (type === "men") {
       setMenCount((prev) => Math.max(0, prev + (increment ? 1 : -1)));
     } else {
       setWomenCount((prev) => Math.max(0, prev + (increment ? 1 : -1)));
     }
-  }, []);
+  };
 
   const handleAddToTicket = () => {
     if (!selectedDate) {
@@ -163,10 +167,10 @@ export default function ClubCard() {
     setMenCount(0);
     setWomenCount(0);
 
-    // Show toast notification
+    // ALWAYS show toast notification, even for same club/date combinations
     setTimeout(() => {
       showToastNotification();
-    }, 300); // Small delay to let modal close first
+    }, 300);
   };
 
   // Memoized counter component to prevent re-renders
@@ -228,17 +232,6 @@ export default function ClubCard() {
         barStyle="light-content"
       />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <MaterialIcons name="arrow-back" size={28} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{clubData.name}</Text>
-        <TouchableOpacity>
-          <MaterialIcons name="share" size={24} color="#fff" />
-        </TouchableOpacity>
-      </View>
-
       {/* Fixed Add Members Button */}
       <View style={styles.fixedButtonContainer}>
         <TouchableOpacity
@@ -258,6 +251,19 @@ export default function ClubCard() {
         <View style={styles.headerContainer}>
           <Image source={getClubImage()} style={styles.headerImage} />
           <View style={styles.imageOverlay} />
+
+          {/* Header buttons overlay on image */}
+          <View style={styles.headerOverlayButtons}>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => router.back()}
+            >
+              <MaterialIcons name="arrow-back" size={28} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.headerButton}>
+              <MaterialIcons name="share" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
 
           {/* Club Info */}
           <View style={styles.clubInfo}>
@@ -346,14 +352,6 @@ export default function ClubCard() {
               />
             </View>
           </ScrollView>
-        </View>
-
-        {/* Action Buttons */}
-        <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.favoriteButton}>
-            <MaterialIcons name="favorite-border" size={18} color="#EC4899" />
-            <Text style={styles.favoriteButtonText}>Add to Favourites</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Extra space for fixed button */}
@@ -483,6 +481,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "NeuePlakExtendedBlack",
     color: "#fff",
+  },
+  // New header overlay styles
+  headerOverlayButtons: {
+    position: "absolute",
+    top: StatusBar.currentHeight + 40,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    zIndex: 200,
+  },
+  headerButton: {
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
   fixedButtonContainer: {
     position: "absolute",
@@ -680,28 +696,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 15,
-  },
-  actionButtons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginHorizontal: 20,
-    marginTop: 30,
-  },
-  favoriteButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#111",
-    borderWidth: 1,
-    borderColor: "#EC4899",
-    borderRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    gap: 8,
-  },
-  favoriteButtonText: {
-    fontFamily: "Montserrat-Medium",
-    fontSize: 14,
-    color: "#EC4899",
   },
   // Modal Styles
   modalOverlay: {

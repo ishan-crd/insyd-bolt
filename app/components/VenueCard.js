@@ -44,7 +44,7 @@ export default function VenueCard({ ticket, onRemove, onUpdateCount }) {
           </View>
           <TouchableOpacity
             style={styles.removeButton}
-            onPress={() => onRemove(ticket.venue)}
+            onPress={() => onRemove(ticket.id)} // Use ticket.id instead of ticket.venue
           >
             <Feather name="x" size={18} color="#fff" />
           </TouchableOpacity>
@@ -61,14 +61,14 @@ export default function VenueCard({ ticket, onRemove, onUpdateCount }) {
             <View style={styles.counter}>
               <TouchableOpacity
                 style={styles.counterButton}
-                onPress={() => onUpdateCount(ticket.venue, "men", false)}
+                onPress={() => onUpdateCount(ticket.id, "men", false)} // Use ticket.id
               >
                 <Text style={styles.counterButtonText}>-</Text>
               </TouchableOpacity>
               <Text style={styles.counterValue}>{ticket.men}</Text>
               <TouchableOpacity
                 style={styles.counterButton}
-                onPress={() => onUpdateCount(ticket.venue, "men", true)}
+                onPress={() => onUpdateCount(ticket.id, "men", true)} // Use ticket.id
               >
                 <Text style={styles.counterButtonText}>+</Text>
               </TouchableOpacity>
@@ -85,14 +85,14 @@ export default function VenueCard({ ticket, onRemove, onUpdateCount }) {
             <View style={styles.counter}>
               <TouchableOpacity
                 style={styles.counterButton}
-                onPress={() => onUpdateCount(ticket.venue, "women", false)}
+                onPress={() => onUpdateCount(ticket.id, "women", false)} // Use ticket.id
               >
                 <Text style={styles.counterButtonText}>-</Text>
               </TouchableOpacity>
               <Text style={styles.counterValue}>{ticket.women}</Text>
               <TouchableOpacity
                 style={styles.counterButton}
-                onPress={() => onUpdateCount(ticket.venue, "women", true)}
+                onPress={() => onUpdateCount(ticket.id, "women", true)} // Use ticket.id
               >
                 <Text style={styles.counterButtonText}>+</Text>
               </TouchableOpacity>

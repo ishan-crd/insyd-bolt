@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import { useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -13,17 +13,15 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import Featured from "./components/Featured";
 
 const { width } = Dimensions.get("window");
-const router = useRouter();
-SplashScreen.preventAutoHideAsync();
 
 export default function Home() {
+  const router = useRouter();
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [contentData, setContentData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -77,6 +75,9 @@ export default function Home() {
       description: "This weekend only",
       image: require("../assets/images/playboy.jpg"),
       color: "#EC4899",
+      discount: "50%",
+      originalPrice: "2000",
+      discountedPrice: "1000",
     },
     {
       id: "ad2",
@@ -86,6 +87,9 @@ export default function Home() {
       description: "Limited slots available",
       image: require("../assets/images/clubbw.png"),
       color: "#8B5CF6",
+      discount: "40%",
+      originalPrice: "2500",
+      discountedPrice: "1500",
     },
     {
       id: "ad3",
@@ -95,6 +99,41 @@ export default function Home() {
       description: "For premium members",
       image: require("../assets/images/whiteclub.png"),
       color: "#F59E0B",
+      discount: "30%",
+      originalPrice: "3000",
+      discountedPrice: "2100",
+    },
+  ];
+
+  // Categories data
+  const categories = [
+    {
+      name: "Rooftop",
+      icon: "apartment",
+      color: "#EC4899",
+      category: "rooftop",
+      description: "Sky-high experiences",
+    },
+    {
+      name: "Lounge",
+      icon: "weekend",
+      color: "#8B5CF6",
+      category: "lounge",
+      description: "Sophisticated vibes",
+    },
+    {
+      name: "Dance",
+      icon: "music-note",
+      color: "#F59E0B",
+      category: "dance",
+      description: "Beat the night away",
+    },
+    {
+      name: "Premium",
+      icon: "star",
+      color: "#10B981",
+      category: "premium",
+      description: "Exclusive experiences",
     },
   ];
 
@@ -136,7 +175,7 @@ export default function Home() {
     setContentData(initialContent);
   };
 
-  const loadMoreContent = useCallback(() => {
+  const loadMoreContent = () => {
     if (loading) return;
 
     setLoading(true);
@@ -177,7 +216,7 @@ export default function Home() {
       setPage((prev) => prev + 1);
       setLoading(false);
     }, 1000);
-  }, [loading, page]);
+  };
 
   const handleClubPress = (club) => {
     router.push({
@@ -191,6 +230,27 @@ export default function Home() {
         clubDescription: club.description,
       },
     });
+  };
+
+  // Handle promotional ad press
+  const handlePromotionalAdPress = (ad) => {
+    router.push({
+      pathname: "/exclusive-booking",
+      params: {
+        type: ad.type,
+        title: ad.title,
+        subtitle: ad.subtitle,
+        description: ad.description,
+        discount: ad.discount,
+        originalPrice: ad.originalPrice,
+        discountedPrice: ad.discountedPrice,
+      },
+    });
+  };
+
+  // Handle category press - Updated for correct routing
+  const handleCategoryPress = (category) => {
+    router.push(`/${category.category}`);
   };
 
   const renderClubCard = (club, style = "default") => {
@@ -278,16 +338,16 @@ export default function Home() {
 
       case "search":
         return (
-          <View style={styles.searchWrapper}>
-            <TextInput
-              placeholder="Search clubs, events..."
-              placeholderTextColor="#999"
-              style={styles.searchInput}
-            />
-            <TouchableOpacity>
-              <MaterialIcons name="filter-list" size={26} color="#999" />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.searchWrapper}
+            onPress={() => router.push("/search")}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.searchPlaceholder}>
+              Search clubs, events...
+            </Text>
+            <MaterialIcons name="search" size={26} color="#999" />
+          </TouchableOpacity>
         );
 
       case "hero":
@@ -347,6 +407,7 @@ export default function Home() {
         return (
           <TouchableOpacity
             style={[styles.promotionalAd, { borderColor: item.ad.color }]}
+            onPress={() => handlePromotionalAdPress(item.ad)}
           >
             <Image source={item.ad.image} style={styles.adImage} />
             <View
@@ -375,22 +436,28 @@ export default function Home() {
           <View style={styles.categorySection}>
             <Text style={styles.sectionTitle}>Browse Categories</Text>
             <View style={styles.categoryGrid}>
-              {[
-                { name: "Rooftop", icon: "apartment", color: "#EC4899" },
-                { name: "Lounge", icon: "weekend", color: "#8B5CF6" },
-                { name: "Dance", icon: "music-note", color: "#F59E0B" },
-                { name: "Premium", icon: "star", color: "#10B981" },
-              ].map((category, idx) => (
+              {categories.map((category, idx) => (
                 <TouchableOpacity
                   key={idx}
                   style={[styles.categoryCard, { borderColor: category.color }]}
+                  onPress={() => handleCategoryPress(category)}
                 >
-                  <MaterialIcons
-                    name={category.icon}
-                    size={24}
-                    color={category.color}
-                  />
+                  <View
+                    style={[
+                      styles.categoryIconContainer,
+                      { backgroundColor: category.color },
+                    ]}
+                  >
+                    <MaterialIcons
+                      name={category.icon}
+                      size={24}
+                      color="#fff"
+                    />
+                  </View>
                   <Text style={styles.categoryText}>{category.name}</Text>
+                  <Text style={styles.categoryDescription}>
+                    {category.description}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -478,17 +545,18 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#000",
-    paddingTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 10,
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 120,
+    paddingBottom: 100,
   },
   headerWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    paddingHorizontal: 0,
   },
   logoText: {
     fontSize: 32,
@@ -504,12 +572,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 24,
     borderRadius: 14,
   },
-  searchInput: {
-    flex: 1,
-    color: "#fff",
+  searchPlaceholder: {
+    color: "#999",
     fontSize: 16,
     fontFamily: "Montserrat-Medium",
   },
@@ -727,10 +795,10 @@ const styles = StyleSheet.create({
   },
   adContent: {
     position: "absolute",
-    top: 15, // Reduced from 20
+    top: 15,
     left: 20,
     right: 20,
-    bottom: 15, // Reduced from 20 to give more space
+    bottom: 15,
   },
   adBadge: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -738,7 +806,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     alignSelf: "flex-start",
-    marginBottom: 8, // Reduced from 10
+    marginBottom: 8,
   },
   adBadgeText: {
     fontSize: 10,
@@ -746,22 +814,22 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   adTitle: {
-    fontSize: 20, // Reduced from 22
+    fontSize: 20,
     fontFamily: "NeuePlakExtendedBlack",
     color: "#fff",
-    marginBottom: 3, // Reduced from 4
+    marginBottom: 3,
   },
   adSubtitle: {
-    fontSize: 14, // Reduced from 16
+    fontSize: 14,
     fontFamily: "Montserrat-Bold",
     color: "#fff",
-    marginBottom: 3, // Reduced from 4
+    marginBottom: 3,
   },
   adDescription: {
-    fontSize: 11, // Reduced from 12
+    fontSize: 11,
     fontFamily: "Montserrat-Light",
     color: "#fff",
-    marginBottom: 12, // Reduced from 15
+    marginBottom: 12,
   },
   adButton: {
     flexDirection: "row",
@@ -772,16 +840,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     alignSelf: "flex-start",
     gap: 4,
-    position: "absolute", // Position it absolutely
-    bottom: 0, // Stick to bottom of content area
-    left: 0, // Align to left
+    position: "absolute",
+    bottom: 0,
+    left: 0,
   },
   adButtonText: {
     fontSize: 12,
     fontFamily: "Montserrat-Bold",
     color: "#fff",
   },
-  // Category Section
+  // Updated Category Section
   categorySection: {
     marginVertical: 10,
   },
@@ -794,16 +862,31 @@ const styles = StyleSheet.create({
   categoryCard: {
     width: (width - 55) / 2,
     backgroundColor: "#111",
-    borderRadius: 15,
+    borderRadius: 20,
     padding: 20,
     alignItems: "center",
     borderWidth: 1,
+    minHeight: 120,
+  },
+  categoryIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
   },
   categoryText: {
-    fontSize: 14,
-    fontFamily: "Montserrat-Medium",
+    fontSize: 16,
+    fontFamily: "NeuePlakExtendedBold",
     color: "#fff",
-    marginTop: 8,
+    marginBottom: 6,
+  },
+  categoryDescription: {
+    fontSize: 12,
+    fontFamily: "Montserrat-Light",
+    color: "#999",
+    textAlign: "center",
   },
   // Stats Section
   statsSection: {
