@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -16,6 +17,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { checkSession, logout } from "../services/authService";
+import { getAllClubs, getPromotionalAds } from "../services/clubService";
 import Featured from "./components/Featured";
 
 const { width } = Dimensions.get("window");
@@ -25,87 +28,23 @@ export default function Home() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [contentData, setContentData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [clubs, setClubs] = useState([]);
+  const [promotionalAds, setPromotionalAds] = useState([]);
   const [page, setPage] = useState(1);
 
-  const baseClubs = [
-    {
-      id: 1,
-      name: "Privee",
-      location: "Vasant Kunj, Delhi",
-      rating: "4.8",
-      image: require("../assets/images/restaurantkitty.png"),
-      type: "premium",
-      description: "Exclusive rooftop experience",
-    },
-    {
-      id: 2,
-      name: "PlayBoy",
-      location: "Delhi NCR",
-      rating: "4.5",
-      image: require("../assets/images/playboy.jpg"),
-      type: "party",
-      description: "Ultimate party destination",
-    },
-    {
-      id: 3,
-      name: "Club BW",
-      location: "Vasant Kunj, Delhi",
-      rating: "4.5",
-      image: require("../assets/images/clubbw.png"),
-      type: "lounge",
-      description: "Sophisticated nightlife",
-    },
-    {
-      id: 4,
-      name: "White Club",
-      location: "New Delhi, Delhi",
-      rating: "4.1",
-      image: require("../assets/images/whiteclub.png"),
-      type: "elegant",
-      description: "Refined elegance",
-    },
-  ];
+  // Default images mapping for backward compatibility
+  const getClubImage = (clubId) => {
+    const imageMap = {
+      1: require("../assets/images/restaurantkitty.png"),
+      2: require("../assets/images/playboy.jpg"),
+      3: require("../assets/images/clubbw.png"),
+      4: require("../assets/images/whiteclub.png"),
+    };
+    return imageMap[clubId] || require("../assets/images/clubbw.png");
+  };
 
-  const promotionalAds = [
-    {
-      id: "ad1",
-      type: "weekend_special",
-      title: "Weekend Special",
-      subtitle: "50% OFF on all bookings",
-      description: "This weekend only",
-      image: require("../assets/images/playboy.jpg"),
-      color: "#EC4899",
-      discount: "50%",
-      originalPrice: "2000",
-      discountedPrice: "1000",
-    },
-    {
-      id: "ad2",
-      type: "new_year",
-      title: "New Year Bash",
-      subtitle: "Book your spot now",
-      description: "Limited slots available",
-      image: require("../assets/images/clubbw.png"),
-      color: "#8B5CF6",
-      discount: "40%",
-      originalPrice: "2500",
-      discountedPrice: "1500",
-    },
-    {
-      id: "ad3",
-      type: "vip_experience",
-      title: "VIP Experience",
-      subtitle: "Exclusive access",
-      description: "For premium members",
-      image: require("../assets/images/whiteclub.png"),
-      color: "#F59E0B",
-      discount: "30%",
-      originalPrice: "3000",
-      discountedPrice: "2100",
-    },
-  ];
-
-  // Categories data
+  // Categories data (keeping same as before)
   const categories = [
     {
       name: "Rooftop",
@@ -138,11 +77,34 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    loadFonts();
-    generateInitialContent();
+    initializeApp();
   }, []);
 
-  async function loadFonts() {
+  const initializeApp = async () => {
+    try {
+      // Check session first
+      const sessionCheck = await checkSession();
+      if (!sessionCheck.success) {
+        Alert.alert("Session Expired", "Please log in again", [
+          { text: "OK", onPress: () => router.replace("/") },
+        ]);
+        return;
+      }
+
+      // Load fonts
+      await loadFonts();
+
+      // Load data from backend
+      await loadBackendData();
+    } catch (error) {
+      console.error("Error initializing app:", error);
+      Alert.alert("Error", "Failed to load app data");
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  const loadFonts = async () => {
     try {
       await Font.loadAsync({
         "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
@@ -158,47 +120,126 @@ export default function Home() {
     } finally {
       await SplashScreen.hideAsync();
     }
-  }
+  };
 
-  const generateInitialContent = () => {
+  const loadBackendData = async () => {
+    try {
+      console.log("🔄 Loading data from backend...");
+
+      // Load clubs and promotional ads in parallel
+      const [clubsResult, adsResult] = await Promise.all([
+        getAllClubs(),
+        getPromotionalAds(),
+      ]);
+
+      if (clubsResult.success) {
+        console.log("✅ Clubs loaded:", clubsResult.data.length);
+        setClubs(clubsResult.data);
+      } else {
+        console.error("❌ Failed to load clubs:", clubsResult.error);
+        // Fallback to static data if backend fails
+        setClubs([
+          {
+            id: 1,
+            name: "Privee",
+            location: "Vasant Kunj, Delhi",
+            rating: "4.8",
+            type: "premium",
+            description: "Exclusive rooftop experience",
+          },
+          {
+            id: 2,
+            name: "PlayBoy",
+            location: "Delhi NCR",
+            rating: "4.5",
+            type: "party",
+            description: "Ultimate party destination",
+          },
+        ]);
+      }
+
+      if (adsResult.success) {
+        console.log("✅ Promotional ads loaded:", adsResult.data.length);
+        setPromotionalAds(adsResult.data);
+      } else {
+        console.error("❌ Failed to load promotional ads:", adsResult.error);
+        // Fallback to static data if backend fails
+        setPromotionalAds([
+          {
+            id: "ad1",
+            type: "weekend_special",
+            title: "Weekend Special",
+            subtitle: "50% OFF on all bookings",
+            description: "This weekend only",
+            color: "#EC4899",
+            discount_percentage: 50,
+            original_price: 2000,
+            discounted_price: 1000,
+          },
+        ]);
+      }
+
+      // Generate initial content with backend data
+      generateInitialContent(clubsResult.data || [], adsResult.data || []);
+    } catch (error) {
+      console.error("Exception loading backend data:", error);
+      // Use fallback data
+      generateInitialContent([], []);
+    }
+  };
+
+  const generateInitialContent = (clubsData, adsData) => {
     const initialContent = [
       { type: "header" },
       { type: "search" },
       { type: "hero" },
       { type: "section_title", title: "Featured Clubs" },
-      { type: "featured_clubs", clubs: baseClubs.slice(0, 2) },
-      { type: "promotional_ad", ad: promotionalAds[0] },
-      { type: "section_title", title: "Trending Now" },
-      { type: "grid_clubs", clubs: baseClubs.slice(2) },
-      { type: "category_section" },
+      { type: "featured_clubs", clubs: clubsData.slice(0, 2) },
     ];
+
+    // Add promotional ad if available
+    if (adsData.length > 0) {
+      initialContent.push({ type: "promotional_ad", ad: adsData[0] });
+    }
+
+    initialContent.push(
+      { type: "section_title", title: "Trending Now" },
+      { type: "grid_clubs", clubs: clubsData.slice(2, 4) },
+      { type: "category_section" }
+    );
+
     setContentData(initialContent);
   };
 
   const loadMoreContent = () => {
-    if (loading) return;
+    if (loading || clubs.length === 0) return;
 
     setLoading(true);
 
-    // Simulate API call
+    // Simulate API call with backend data
     setTimeout(() => {
       const newContent = [];
       const adIndex = (page - 1) % promotionalAds.length;
 
       // Add varied content based on page number
       if (page % 2 === 0) {
+        if (promotionalAds.length > 0) {
+          newContent.push({
+            type: "promotional_ad",
+            ad: promotionalAds[adIndex],
+          });
+        }
         newContent.push(
-          { type: "promotional_ad", ad: promotionalAds[adIndex] },
           { type: "section_title", title: "Recommended For You" },
           {
             type: "horizontal_clubs",
-            clubs: [...baseClubs].sort(() => Math.random() - 0.5),
+            clubs: [...clubs].sort(() => Math.random() - 0.5),
           }
         );
       } else {
         newContent.push(
           { type: "section_title", title: "Popular This Week" },
-          { type: "large_cards", clubs: baseClubs.slice(0, 2) },
+          { type: "large_cards", clubs: clubs.slice(0, 2) },
           { type: "stats_section" }
         );
       }
@@ -225,14 +266,13 @@ export default function Home() {
         clubId: club.id.toString(),
         clubName: club.name,
         clubLocation: club.location,
-        clubRating: club.rating,
+        clubRating: club.rating.toString(),
         clubType: club.type,
         clubDescription: club.description,
       },
     });
   };
 
-  // Handle promotional ad press
   const handlePromotionalAdPress = (ad) => {
     router.push({
       pathname: "/exclusive-booking",
@@ -241,19 +281,36 @@ export default function Home() {
         title: ad.title,
         subtitle: ad.subtitle,
         description: ad.description,
-        discount: ad.discount,
-        originalPrice: ad.originalPrice,
-        discountedPrice: ad.discountedPrice,
+        discount: ad.discount_percentage?.toString() || "0",
+        originalPrice: ad.original_price?.toString() || "0",
+        discountedPrice: ad.discounted_price?.toString() || "0",
       },
     });
   };
 
-  // Handle category press - Updated for correct routing
   const handleCategoryPress = (category) => {
     router.push(`/${category.category}`);
   };
 
+  const handleLogout = async () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: async () => {
+          const result = await logout();
+          if (result.success) {
+            router.replace("/");
+          }
+        },
+      },
+    ]);
+  };
+
   const renderClubCard = (club, style = "default") => {
+    const clubImage = getClubImage(club.id);
+
     switch (style) {
       case "large":
         return (
@@ -262,7 +319,7 @@ export default function Home() {
             onPress={() => handleClubPress(club)}
             key={club.id}
           >
-            <Image source={club.image} style={styles.largeClubImage} />
+            <Image source={clubImage} style={styles.largeClubImage} />
             <View style={styles.largeClubOverlay} />
             <View style={styles.largeClubInfo}>
               <Text style={styles.largeClubName}>{club.name}</Text>
@@ -285,7 +342,7 @@ export default function Home() {
             onPress={() => handleClubPress(club)}
             key={club.id}
           >
-            <Image source={club.image} style={styles.gridClubImage} />
+            <Image source={clubImage} style={styles.gridClubImage} />
             <View style={styles.gridClubOverlay} />
             <View style={styles.gridClubInfo}>
               <Text style={styles.gridClubName}>{club.name}</Text>
@@ -305,7 +362,7 @@ export default function Home() {
             onPress={() => handleClubPress(club)}
             key={club.id}
           >
-            <Image source={club.image} style={styles.horizontalClubImage} />
+            <Image source={clubImage} style={styles.horizontalClubImage} />
             <View style={styles.horizontalClubOverlay} />
             <View style={styles.horizontalClubInfo}>
               <Text style={styles.horizontalClubName}>{club.name}</Text>
@@ -330,9 +387,17 @@ export default function Home() {
             <Text style={styles.logoText}>
               <Text style={styles.logoPink}>in</Text>syd
             </Text>
-            <TouchableOpacity onPress={() => router.push("/ticket")}>
-              <MaterialIcons name="local-activity" size={30} color="#fff" />
-            </TouchableOpacity>
+            <View style={styles.headerButtons}>
+              <TouchableOpacity onPress={() => router.push("/ticket")}>
+                <MaterialIcons name="local-activity" size={30} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={styles.logoutButton}
+              >
+                <MaterialIcons name="logout" size={24} color="#EC4899" />
+              </TouchableOpacity>
+            </View>
           </View>
         );
 
@@ -351,15 +416,19 @@ export default function Home() {
         );
 
       case "hero":
+        const heroClub =
+          clubs.find((club) => club.name === "PlayBoy") || clubs[0];
+        if (!heroClub) return null;
+
         return (
           <View style={styles.heroContainer}>
             <Image
-              source={require("../assets/images/playboy.jpg")}
+              source={getClubImage(heroClub.id)}
               style={styles.heroImage}
             />
             <View style={styles.imageOverlay} />
             <View style={styles.heroTextWrapper}>
-              <Text style={styles.heroTitle}>PlayBoy</Text>
+              <Text style={styles.heroTitle}>{heroClub.name}</Text>
               <Text style={styles.heroSub}>
                 <Text style={styles.logoTextexc}>
                   <Text style={styles.logoPinkexc}>in</Text>syd
@@ -409,7 +478,7 @@ export default function Home() {
             style={[styles.promotionalAd, { borderColor: item.ad.color }]}
             onPress={() => handlePromotionalAdPress(item.ad)}
           >
-            <Image source={item.ad.image} style={styles.adImage} />
+            <Image source={getClubImage(2)} style={styles.adImage} />
             <View
               style={[
                 styles.adOverlay,
@@ -478,7 +547,7 @@ export default function Home() {
                 <Text style={styles.statLabel}>Events</Text>
               </View>
               <View style={styles.statCard}>
-                <Text style={styles.statNumber}>25+</Text>
+                <Text style={styles.statNumber}>{clubs.length}+</Text>
                 <Text style={styles.statLabel}>Venues</Text>
               </View>
             </View>
@@ -507,8 +576,23 @@ export default function Home() {
     }
   };
 
-  if (!fontsLoaded) {
-    return null;
+  // Show loading screen during initial load
+  if (initialLoading || !fontsLoaded) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.loadingScreen}>
+          <Text style={styles.logoText}>
+            <Text style={styles.logoPink}>in</Text>syd
+          </Text>
+          <ActivityIndicator
+            size="large"
+            color="#EC4899"
+            style={{ marginTop: 20 }}
+          />
+          <Text style={styles.loadingText}>Loading exclusive venues...</Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -546,6 +630,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
     paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 10,
+  },
+  loadingScreen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000",
+  },
+  loadingText: {
+    fontSize: 14,
+    fontFamily: "Montserrat-Light",
+    color: "#999",
+    marginTop: 10,
+  },
+  headerButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+  },
+  logoutButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#111",
+    justifyContent: "center",
+    alignItems: "center",
   },
   scrollContainer: {
     padding: 20,
@@ -987,11 +1096,5 @@ const styles = StyleSheet.create({
   loadingContainer: {
     alignItems: "center",
     paddingVertical: 30,
-  },
-  loadingText: {
-    fontSize: 14,
-    fontFamily: "Montserrat-Light",
-    color: "#999",
-    marginTop: 10,
   },
 });
